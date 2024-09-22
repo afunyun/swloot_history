@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Single Wrinkle - Loot History</title>
-	<h2>i have to update this data manually so please be patient</h2>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,6 +18,12 @@
             text-align: center;
             font-size: 28px;
             color: #fff;
+        }
+        h2 {
+            text-align: center;
+            font-size: 18px;
+            margin: 10px 0;
+            color: #ccc;
         }
         #controls {
             padding: 20px;
@@ -101,7 +106,8 @@
 </head>
 <body>
 
-<h1>Maximum Effort - Loot History</h1>
+<h1>Single Wrinkle - Loot History</h1>
+<h2>I have to update this data manually, so please be patient.</h2>
 
 <div id="controls">
     <button id="loadDataButton">Load Data</button>
@@ -132,207 +138,207 @@
 </table>
 
 <script>
-// Parse CSV data
-function parseCSV(data) {
-    const rows = [];
-    let row = [];
-    let currentField = '';
-    let insideQuotes = false;
-    let i = 0;
+    // JavaScript code remains the same as before
+    // Parse CSV data
+    function parseCSV(data) {
+        const rows = [];
+        let row = [];
+        let currentField = '';
+        let insideQuotes = false;
+        let i = 0;
 
-    while (i < data.length) {
-        const char = data[i];
+        while (i < data.length) {
+            const char = data[i];
 
-        if (char === '"') {
-            if (insideQuotes && data[i + 1] === '"') {
-                // Escaped quote
-                currentField += '"';
-                i++;
-            } else {
-                insideQuotes = !insideQuotes;
-            }
-        } else if (char === ',' && !insideQuotes) {
-            row.push(currentField);
-            currentField = '';
-        } else if ((char === '\n' || char === '\r') && !insideQuotes) {
-            if (currentField || currentField === '') {
+            if (char === '"') {
+                if (insideQuotes && data[i + 1] === '"') {
+                    // Escaped quote
+                    currentField += '"';
+                    i++;
+                } else {
+                    insideQuotes = !insideQuotes;
+                }
+            } else if (char === ',' && !insideQuotes) {
                 row.push(currentField);
                 currentField = '';
-            }
-            if (row.length > 0) {
-                rows.push(row);
-                row = [];
-            }
-            // Handle \r\n line endings
-            if (char === '\r' && data[i + 1] === '\n') {
-                i++;
-            }
-        } else {
-            currentField += char;
-        }
-        i++;
-    }
-
-    // Add the last field and row
-    if (currentField || currentField === '') {
-        row.push(currentField);
-    }
-    if (row.length > 0) {
-        rows.push(row);
-    }
-
-    // Convert array of arrays into array of objects
-    const headers = rows[0];
-    const entries = [];
-    for (let j = 1; j < rows.length; j++) {
-        const obj = {};
-        const currentRow = rows[j];
-        headers.forEach((header, index) => {
-            obj[header] = currentRow[index] || '';
-        });
-        entries.push(obj);
-    }
-    return entries;
-}
-
-let lootData = []; // Store the data globally
-
-function createTableRows(data) {
-    const tbody = document.querySelector('#lootTable tbody');
-    tbody.innerHTML = '';
-
-    data.forEach(entry => {
-        const row = document.createElement('tr');
-
-        ['player', 'date', 'time', 'item', 'response', 'class', 'instance', 'boss', 'note'].forEach(key => {
-            const cell = document.createElement('td');
-            cell.textContent = entry[key] || '';
-            row.appendChild(cell);
-        });
-
-        tbody.appendChild(row);
-    });
-}
-
-function sortTable(n) {
-    const table = document.getElementById("lootTable");
-    let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    switching = true;
-    dir = "asc";
-
-    while (switching) {
-        switching = false;
-        rows = table.rows;
-
-        for (i = 1; i < (rows.length - 1); i++) {
-            shouldSwitch = false;
-            x = rows[i].getElementsByTagName("TD")[n].textContent.toLowerCase();
-            y = rows[i + 1].getElementsByTagName("TD")[n].textContent.toLowerCase();
-
-            if (dir === "asc") {
-                if (x > y) {
-                    shouldSwitch = true;
-                    break;
+            } else if ((char === '\n' || char === '\r') && !insideQuotes) {
+                if (currentField || currentField === '') {
+                    row.push(currentField);
+                    currentField = '';
                 }
-            } else if (dir === "desc") {
-                if (x < y) {
-                    shouldSwitch = true;
-                    break;
+                if (row.length > 0) {
+                    rows.push(row);
+                    row = [];
+                }
+                // Handle \r\n line endings
+                if (char === '\r' && data[i + 1] === '\n') {
+                    i++;
+                }
+            } else {
+                currentField += char;
+            }
+            i++;
+        }
+
+        // Add the last field and row
+        if (currentField || currentField === '') {
+            row.push(currentField);
+        }
+        if (row.length > 0) {
+            rows.push(row);
+        }
+
+        // Convert array of arrays into array of objects
+        const headers = rows[0];
+        const entries = [];
+        for (let j = 1; j < rows.length; j++) {
+            const obj = {};
+            const currentRow = rows[j];
+            headers.forEach((header, index) => {
+                obj[header] = currentRow[index] || '';
+            });
+            entries.push(obj);
+        }
+        return entries;
+    }
+
+    let lootData = []; // Store the data globally
+
+    function createTableRows(data) {
+        const tbody = document.querySelector('#lootTable tbody');
+        tbody.innerHTML = '';
+
+        data.forEach(entry => {
+            const row = document.createElement('tr');
+
+            ['player', 'date', 'time', 'item', 'response', 'class', 'instance', 'boss', 'note'].forEach(key => {
+                const cell = document.createElement('td');
+                cell.textContent = entry[key] || '';
+                row.appendChild(cell);
+            });
+
+            tbody.appendChild(row);
+        });
+    }
+
+    function sortTable(n) {
+        const table = document.getElementById("lootTable");
+        let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        switching = true;
+        dir = "asc";
+
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[n].textContent.toLowerCase();
+                y = rows[i + 1].getElementsByTagName("TD")[n].textContent.toLowerCase();
+
+                if (dir === "asc") {
+                    if (x > y) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir === "desc") {
+                    if (x < y) {
+                        shouldSwitch = true;
+                        break;
+                    }
                 }
             }
-        }
-        if (shouldSwitch) {
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
-            switchcount++;
-        } else {
-            if (switchcount === 0 && dir === "asc") {
-                dir = "desc";
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                 switching = true;
+                switchcount++;
+            } else {
+                if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
             }
         }
     }
-}
 
-// Event listeners for table headers
-document.querySelectorAll('#lootTable th').forEach((th, index) => {
-    th.addEventListener('click', () => sortTable(index));
-});
+    // Event listeners for table headers
+    document.querySelectorAll('#lootTable th').forEach((th, index) => {
+        th.addEventListener('click', () => sortTable(index));
+    });
 
-// Search functionality
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    filterAndDisplayData();
-});
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        filterAndDisplayData();
+    });
 
-// Response filter functionality
-document.getElementById('responseFilter').addEventListener('change', function() {
-    filterAndDisplayData();
-});
+    // Response filter functionality
+    document.getElementById('responseFilter').addEventListener('change', function() {
+        filterAndDisplayData();
+    });
 
-// Load data
-function loadDataFromURL() {
-    const dataURL = 'loot_export.csv'; // Adjust the path if necessary
+    // Load data
+    function loadDataFromURL() {
+        const dataURL = 'loot_export.csv'; // Adjust the path if necessary
 
-    fetch(dataURL)
-        .then(response => response.text())
-        .then(contents => {
-            lootData = parseCSV(contents);
-            populateResponseFilter();
-            filterAndDisplayData();
+        fetch(dataURL)
+            .then(response => response.text())
+            .then(contents => {
+                lootData = parseCSV(contents);
+                populateResponseFilter();
+                filterAndDisplayData();
 
-            // Show the table and controls
-            document.getElementById('lootTable').classList.remove('hidden');
-            document.getElementById('searchInput').classList.remove('hidden');
-            document.getElementById('responseFilter').classList.remove('hidden');
-            document.getElementById('loadDataButton').classList.add('hidden');
-        })
-        .catch(error => {
-            console.error('Error fetching the data:', error);
-            alert('Failed to load data. Please check the console for details.');
+                // Show the table and controls
+                document.getElementById('lootTable').classList.remove('hidden');
+                document.getElementById('searchInput').classList.remove('hidden');
+                document.getElementById('responseFilter').classList.remove('hidden');
+                document.getElementById('loadDataButton').classList.add('hidden');
+            })
+            .catch(error => {
+                console.error('Error fetching the data:', error);
+                alert('Failed to load data. Please check the console for details.');
+            });
+    }
+
+    // Populate response filter options
+    function populateResponseFilter() {
+        const responseFilter = document.getElementById('responseFilter');
+        const responses = [...new Set(lootData.map(entry => entry.response))].sort();
+
+        // Clear existing options except 'All Responses'
+        responseFilter.innerHTML = '<option value="all">All Responses</option>';
+
+        responses.forEach(response => {
+            if (response.trim() !== '') {
+                const option = document.createElement('option');
+                option.value = response;
+                option.textContent = response;
+                responseFilter.appendChild(option);
+            }
         });
-}
+    }
 
-// Populate response filter options
-function populateResponseFilter() {
-    const responseFilter = document.getElementById('responseFilter');
-    const responses = [...new Set(lootData.map(entry => entry.response))].sort();
+    // Filter and display data based on search and response filter
+    function filterAndDisplayData() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const selectedResponse = document.getElementById('responseFilter').value;
 
-    // Clear existing options except 'All Responses'
-    responseFilter.innerHTML = '<option value="all">All Responses</option>';
+        const filteredData = lootData.filter(entry => {
+            const matchesSearch = Object.values(entry).some(value =>
+                value.toLowerCase().includes(searchValue)
+            );
 
-    responses.forEach(response => {
-        if (response.trim() !== '') {
-            const option = document.createElement('option');
-            option.value = response;
-            option.textContent = response;
-            responseFilter.appendChild(option);
-        }
+            const matchesResponse = selectedResponse === 'all' || entry.response === selectedResponse;
+
+            return matchesSearch && matchesResponse;
+        });
+
+        createTableRows(filteredData);
+    }
+
+    // Handle load data button click
+    document.getElementById('loadDataButton').addEventListener('click', function() {
+        loadDataFromURL();
     });
-}
-
-// Filter and display data based on search and response filter
-function filterAndDisplayData() {
-    const searchValue = document.getElementById('searchInput').value.toLowerCase();
-    const selectedResponse = document.getElementById('responseFilter').value;
-
-    const filteredData = lootData.filter(entry => {
-        const matchesSearch = Object.values(entry).some(value =>
-            value.toLowerCase().includes(searchValue)
-        );
-
-        const matchesResponse = selectedResponse === 'all' || entry.response === selectedResponse;
-
-        return matchesSearch && matchesResponse;
-    });
-
-    createTableRows(filteredData);
-}
-
-// Handle load data button click
-document.getElementById('loadDataButton').addEventListener('click', function() {
-    loadDataFromURL();
-});
-
 </script>
 
 </body>
