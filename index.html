@@ -110,7 +110,7 @@
 <body>
 
 <h1>Single Wrinkle - Loot History</h1>
-<h2>Currently I have to export this data manually after each boss, patience i beg</h2>
+<h2>Currently I have to export this data manually after each boss so please don't yell at me</h2>
 
 <div id="controls">
     <button id="loadDataButton">Load Data</button>
@@ -182,7 +182,7 @@
             i++;
         }
 
-        // Add last field and row
+        // Add the last field and row
         if (currentField || currentField === '') {
             row.push(currentField);
         }
@@ -204,6 +204,25 @@
         return entries;
     }
 
+    // Function to parse itemString and extract itemID and bonus IDs
+    function parseItemString(itemString) {
+        // Example itemString:
+        // "item:219915::::::::80:255::5:5:6652:10355:10265:1511:10255:1:28:2462"
+        const parts = itemString.split(':');
+        const itemID = parts[1];
+        const numBonusIDsIndex = 13; // index where numBonusIDs is located
+
+        // Find the number of bonus IDs
+        const numBonusIDs = parseInt(parts[numBonusIDsIndex]) || 0;
+        // Bonus IDs start after numBonusIDsIndex
+        const bonusIDs = parts.slice(numBonusIDsIndex + 1, numBonusIDsIndex + 1 + numBonusIDs);
+
+        return {
+            itemID: itemID,
+            bonusIDs: bonusIDs
+        };
+    }
+
     let lootData = []; // Store the data globally
 
     function createTableRows(data) {
@@ -217,15 +236,29 @@
                 const cell = document.createElement('td');
 
                 if (key === 'item') {
-                    // Create a link to the Wowhead item page
-                    const link = document.createElement('a');
-                    const itemID = entry['itemID'];
-                    link.href = `https://www.wowhead.com/item=${itemID}`;
-                    link.textContent = entry['item'];
-                    link.classList.add('q'); // Optional: Add quality class
-                    link.dataset.whTooltip = `item=${itemID}`;
-                    link.target = '_blank'; // Optional: Open link in new tab
-                    cell.appendChild(link);
+                    // Parse the itemString to get itemID and bonusIDs
+                    const itemString = entry['itemString'];
+                    const itemName = entry['item'];
+                    if (itemString && itemName) {
+                        const itemData = parseItemString(itemString);
+                        const itemID = itemData.itemID;
+                        const bonusIDs = itemData.bonusIDs;
+
+                        // Create a link to the Wowhead item page with bonus IDs
+                        const link = document.createElement('a');
+                        let href = `https://www.wowhead.com/item=${itemID}`;
+                        if (bonusIDs.length > 0) {
+                            href += `?bonus=${bonusIDs.join(':')}`;
+                        }
+                        link.href = href;
+                        link.textContent = itemName;
+                        link.classList.add('q'); // Optional: Add quality class
+                        link.dataset.whtooltip = `item=${itemID}&bonus=${bonusIDs.join(':')}`;
+                        link.target = '_blank'; // Optional: Open link in new tab
+                        cell.appendChild(link);
+                    } else {
+                        cell.textContent = entry[key] || '';
+                    }
                 } else {
                     cell.textContent = entry[key] || '';
                 }
@@ -298,7 +331,7 @@
 
     // Load data
     function loadDataFromURL() {
-        const dataURL = 'loot_export.csv'; 
+        const dataURL = 'loot_export.csv'; //local path
 
         fetch(dataURL)
             .then(response => response.text())
