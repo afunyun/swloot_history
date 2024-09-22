@@ -138,8 +138,7 @@
 </table>
 
 <script>
-    // JavaScript code remains the same as before
-    // Parse CSV data
+    // parse CSV data
     function parseCSV(data) {
         const rows = [];
         let row = [];
@@ -180,7 +179,7 @@
             i++;
         }
 
-        // Add the last field and row
+        // Add last field and row
         if (currentField || currentField === '') {
             row.push(currentField);
         }
