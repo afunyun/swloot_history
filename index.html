@@ -110,7 +110,7 @@
 <body>
 
 <h1>Single Wrinkle - Loot History</h1>
-<h2>Currently I have to export this data manually after each boss so please don't yell at me</h2>
+<h2>Currently not automatically exported, so please wait a moment after a boss is dead and loot has been distributed.</h2>
 
 <div id="controls">
     <button id="loadDataButton">Load Data</button>
@@ -259,6 +259,30 @@
                     } else {
                         cell.textContent = entry[key] || '';
                     }
+                } else if (key === 'player') {
+                    // Create a link to the Raider.IO profile
+                    const playerString = entry['player'];
+                    if (playerString) {
+                        // Split the playerString into character name and realm
+                        const [characterName, realmName] = playerString.split('-');
+                        if (characterName && realmName) {
+                            // Format the realm name: replace spaces with hyphens and lowercase
+                            const formattedRealm = realmName.toLowerCase().replace(/ /g, '-');
+                            // Encode the character name and realm name for URLs
+                            const encodedCharacter = encodeURIComponent(characterName);
+                            const encodedRealm = encodeURIComponent(formattedRealm);
+
+                            const link = document.createElement('a');
+                            link.href = `https://raider.io/characters/us/${encodedRealm}/${encodedCharacter}`;
+                            link.textContent = playerString;
+                            link.target = '_blank'; // Optional: Open link in new tab
+                            cell.appendChild(link);
+                        } else {
+                            cell.textContent = playerString;
+                        }
+                    } else {
+                        cell.textContent = entry[key] || '';
+                    }
                 } else {
                     cell.textContent = entry[key] || '';
                 }
@@ -331,7 +355,7 @@
 
     // Load data
     function loadDataFromURL() {
-        const dataURL = 'loot_export.csv'; //local path
+        const dataURL = 'loot_export.csv'; // local path
 
         fetch(dataURL)
             .then(response => response.text())
