@@ -221,8 +221,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 
 // Function to load data from URL
 function loadDataFromURL() {
-    const dataURL = 'https://cors-anywhere.herokuapp.com/https://gist.githubusercontent.com/afunyun/2742c5c6b2d5531a52db2ae733463aed/raw/loot_export.csv';
-    // Alternatively, use your own CORS proxy or host the CSV file on a server that allows CORS.
+    const dataURL = 'https://raw.githubusercontent.com/afunyun/swloot_history/main/loot_export.csv';
 
     fetch(dataURL)
         .then(response => response.text())
