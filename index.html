@@ -103,11 +103,14 @@
             }
         }
     </style>
+    <!-- Wowhead Tooltip Scripts -->
+    <script>const whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>
+    <script src="https://wow.zamimg.com/js/tooltips.js"></script>
 </head>
 <body>
 
 <h1>Single Wrinkle - Loot History</h1>
-<h2>currently i have to export this data manually after each boss so please be patient i beg</h2>
+<h2>Currently I have to export this data manually after each boss, patience i beg</h2>
 
 <div id="controls">
     <button id="loadDataButton">Load Data</button>
@@ -138,7 +141,7 @@
 </table>
 
 <script>
-    // parse CSV data
+    // Parse CSV data
     function parseCSV(data) {
         const rows = [];
         let row = [];
@@ -212,12 +215,30 @@
 
             ['player', 'date', 'time', 'item', 'response', 'class', 'instance', 'boss', 'note'].forEach(key => {
                 const cell = document.createElement('td');
-                cell.textContent = entry[key] || '';
+
+                if (key === 'item') {
+                    // Create a link to the Wowhead item page
+                    const link = document.createElement('a');
+                    const itemID = entry['itemID'];
+                    link.href = `https://www.wowhead.com/item=${itemID}`;
+                    link.textContent = entry['item'];
+                    link.classList.add('q'); // Optional: Add quality class
+                    link.dataset.whTooltip = `item=${itemID}`;
+                    link.target = '_blank'; // Optional: Open link in new tab
+                    cell.appendChild(link);
+                } else {
+                    cell.textContent = entry[key] || '';
+                }
                 row.appendChild(cell);
             });
 
             tbody.appendChild(row);
         });
+
+        // Re-scan the page for tooltips after updating the table
+        if (typeof whTooltips !== 'undefined' && typeof whTooltips.refreshLinks === 'function') {
+            whTooltips.refreshLinks();
+        }
     }
 
     function sortTable(n) {
@@ -277,7 +298,7 @@
 
     // Load data
     function loadDataFromURL() {
-        const dataURL = 'loot_export.csv'; // Adjust the path if necessary
+        const dataURL = 'loot_export.csv'; 
 
         fetch(dataURL)
             .then(response => response.text())
