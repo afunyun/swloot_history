@@ -206,8 +206,9 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     });
 });
 
+// load data
 function loadDataFromURL() {
-    const dataURL = 'https://raw.githubusercontent.com/afunyun/swloot_history/main/loot_export.csv';
+    const dataURL = 'loot_export.csv'; // Adjust the path if necessary
 
     fetch(dataURL)
         .then(response => response.text())
@@ -215,9 +216,11 @@ function loadDataFromURL() {
             const lootData = parseCSV(contents);
             createTableRows(lootData);
 
+            // Show the table and search input
             document.getElementById('lootTable').style.display = '';
             document.getElementById('searchInput').style.display = '';
-            })
+            document.getElementById('refreshButton').style.display = '';
+        })
         .catch(error => {
             console.error('Error fetching the data:', error);
             alert('Failed to load data. Please check the console for details.');
