@@ -9,14 +9,6 @@
             background-color: #232f3e;
             color: white;
         }
-        #refreshButton {
-            margin-top: 10px;
-            padding: 5px 10px;
-            background-color: #3a4a61;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
         table {
             border-collapse: collapse;
             width: 100%;
@@ -57,7 +49,6 @@
 <h1>maximum effort</h1>
 
 <button id="loadDataButton">Load Data</button>
-<button id="refreshButton" style="display:none;">Refresh Data</button>
 <br>
 <input type="text" id="searchInput" placeholder="Search..." style="display:none;">
 
@@ -81,7 +72,7 @@
 </table>
 
 <script>
-// Function to parse CSV data
+// parse data
 function parseCSV(data) {
     const rows = [];
     let row = [];
@@ -112,7 +103,7 @@ function parseCSV(data) {
                 rows.push(row);
                 row = [];
             }
-            // Handle \r\n (Windows) line endings
+            // \r\n line endings
             if (char === '\r' && data[i + 1] === '\n') {
                 i++;
             }
@@ -122,7 +113,7 @@ function parseCSV(data) {
         i++;
     }
 
-    // Add the last field and row if necessary
+    // add the last field and row
     if (currentField || currentField === '') {
         row.push(currentField);
     }
@@ -144,7 +135,6 @@ function parseCSV(data) {
     return entries;
 }
 
-// Function to create table rows
 function createTableRows(data) {
     const tbody = document.querySelector('#lootTable tbody');
     tbody.innerHTML = '';
@@ -162,7 +152,6 @@ function createTableRows(data) {
     });
 }
 
-// Function to sort table
 function sortTable(n) {
     const table = document.getElementById("lootTable");
     let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
@@ -203,12 +192,10 @@ function sortTable(n) {
     }
 }
 
-// Event listeners for table headers
 document.querySelectorAll('#lootTable th').forEach((th, index) => {
     th.addEventListener('click', () => sortTable(index));
 });
 
-// Search functionality
 document.getElementById('searchInput').addEventListener('keyup', function() {
     const filter = this.value.toLowerCase();
     const rows = document.querySelectorAll('#lootTable tbody tr');
@@ -219,7 +206,6 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     });
 });
 
-// Function to load data from URL
 function loadDataFromURL() {
     const dataURL = 'https://raw.githubusercontent.com/afunyun/swloot_history/main/loot_export.csv';
 
@@ -229,11 +215,9 @@ function loadDataFromURL() {
             const lootData = parseCSV(contents);
             createTableRows(lootData);
 
-            // Show the table and search input
             document.getElementById('lootTable').style.display = '';
             document.getElementById('searchInput').style.display = '';
-            document.getElementById('refreshButton').style.display = '';
-        })
+            })
         .catch(error => {
             console.error('Error fetching the data:', error);
             alert('Failed to load data. Please check the console for details.');
@@ -245,10 +229,6 @@ document.getElementById('loadDataButton').addEventListener('click', function() {
     loadDataFromURL();
 });
 
-// Handle refresh button click
-document.getElementById('refreshButton').addEventListener('click', function() {
-    loadDataFromURL();
-});
 </script>
 
 </body>
